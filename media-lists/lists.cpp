@@ -58,8 +58,6 @@ int main()
 	string line;
 	string fileName;
 	ifstream textFile;
-
-	
 	ofstream out("output.txt");
 
 	// get input file name
@@ -93,7 +91,6 @@ int main()
 	
 	// close files and end program
 	textFile.close();
-
 	out.close();
 	return 0;
 }

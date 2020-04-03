@@ -1,2 +1,2 @@
-# reddit-coding-challenges
-Solutions to coding challenges posted to r/dailyprogrammer on Reddit.com
+# coding-challenges
+Solutions to various coding challenges found around the internet.
