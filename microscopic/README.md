@@ -1,2 +1,2 @@
-# tiny-programs
-Very tiny programs. Sometimes just "Hello, World!"
+# microscopic
+Very tiny programs. Not even big enough for separate directories.

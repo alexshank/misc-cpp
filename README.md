@@ -1,2 +1,2 @@
-# tiny-programs
-Very tiny programs. Sometimes just "Hello, World!"
+# misc-cpp
+A collection of C/C++ files that aren't big enough for their own repositories.
