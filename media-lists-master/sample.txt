@@ -1,3 +1,0 @@
-0<>name<>notes<>true
-1<>name2<>notes2<>false
-2<>name3<>notes3<>false
