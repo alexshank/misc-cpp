@@ -1,0 +1,135 @@
+Enter URL to get HTML from:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+
+ 
+
+<html>
+<head>
+	<title>PNC Bank Online Banking</title>
+    <meta http-equiv="Expires" content="Tue, 04 Dec 1993 21:29:02 GMT" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache, max-age=0, must-revalidate, no-store" />
+    <script type="text/javascript" src="/dtagent610_23jrx_8105.js" data-dtconfig="rid=RID_-1203049042|rpid=530151694|domain=pnc.com|tp=500,50,3|lab=1|reportUrl=dynaTraceMonitor"></script><script language="JavaScript" src="/JavaScriptLib/popup.js"></script>
+    <script language="JavaScript" src="/JavaScriptLib/cookies.js"></script>
+    <script language="JavaScript">
+    <!--
+    
+	//  NOTE: This frameset called by the OnlineBankingServlet and has the rsa call.
+	//  index.html is only a convience frameset and the user will be challanged
+	//  if they enter that way.
+
+    var timeoutPageMilliseconds = -1;
+    var timeoutWarningPageMilliseconds = -1;
+    var timeoutId = "";
+
+    var webStationCookie = new Cookie(document, "webStation");
+
+    if (webStationCookie.load()) {
+      timeoutPageMilliseconds = 100000;
+      timeoutWarningPageMilliseconds = 20000;
+    }
+
+    var isLoggedIntoAl = false;
+    var givenAlert = false;
+    var isMb = false;
+    
+	function stopTimeout() {
+	  if (timeoutId != "") {
+	    window.clearTimeout(timeoutId);
+	  }
+	}
+	
+	function startTimeout() {
+	  if (timeoutPageMilliseconds &&
+	      timeoutPageMilliseconds >= 0) {
+	    timeoutId = window.setTimeout("timeoutWarning();",
+	                                  timeoutPageMilliseconds);
+	  }
+	}
+	
+	function restartTimeout() {
+	  stopTimeout();
+	  startTimeout();
+	}
+	
+	function timeoutWarning() {
+	  var timeoutWarningWindow = window.open("/timeoutWarning.jsp", "timeoutWarning", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=500,height=150");
+	}
+
+    function forceLogoff(){
+    	
+    	if(isMb){return;}
+        
+        if (isLoggedIntoAl){
+            isLoggedIntoAl = false;
+            window.open("/alservlet/LogoutServlet?popup=true","LogoutWin", "toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,width=500,height=150");
+        }
+
+		var logoffOLBImage = new Image();
+		logoffOLBImage.src = "/alservlet/LogoutServlet";
+    }
+
+    //-->
+    </script>
+</head>
+
+<noscript>
+    <body>
+        <font size="3">Your browser must have Javascript enabled and be able to support frames to use PNC Online Banking.</font><br />
+        <p><a href="https://www.pnc.com">Go Back to PNC.</a></p>
+        <p><a href="/index.html">I've turned on JavaScript, please take me to Account Link.</a></p>
+    </body>
+</noscript>
+<noframes>
+    <body>
+        <font size="3">Your browser must have Javascript enabled and be able to support frames to use PNC Online Banking.</font><br />
+        <p><a href="https://www.pnc.com">Go Back to PNC.</a></p>
+        <p><a href="/index.html">I've turned on JavaScript, please take me to Account Link.</a></p> 
+    </body>   
+</noframes>
+<script src="/JavaScriptLib/pm_fp.js" language="JavaScript" type="text/javascript"></script>
+<script language="JavaScript" type="text/javascript">
+<!--
+	if (self.addEventListener) {                    
+		self.addEventListener("load", populateDevicePrint, false);
+	} else if (self.attachEvent) {                  
+		self.attachEvent("onload", populateDevicePrint);
+	} else {                                        
+		populateDevicePrint();
+	}
+//-->
+</script>
+<script language="javascript" type="text/javascript">
+<!--
+	function buildFrameset(bottomFrameUrl){
+		document.writeln('<frameset rows="*,1" frameborder="no" framespacing="0" border="0" onunload="forceLogoff()">');
+		document.writeln('<frame src="' + bottomFrameUrl + '" name="center" marginheight="0" marginwidth="0" noresize />');
+		document.writeln('<frame src="/blank.html" name="filler" marginheight="0" marginwidth="0" noresize />');
+		document.writeln('</frameset>');
+	}
+
+	function buildCookieError() {
+		document.writeln('<body><font size="3">Your browser must accept cookies to use PNC\'s Online Banking.</font><br>');
+		document.writeln('<p><a href="https://www.pnc.com/">I\'ve enabled Cookies, please take me to Online Banking.</a></p>');
+		document.writeln('<p><a href="/browser_settings.html">Show instructions on fixing this problem.</a></p>');
+		document.writeln('</body>'); 
+	}
+
+	var signOnUrl = addDevicePrintToUrl('/alservlet/SignonInitServlet');
+	// if adding device info fails then just use the url.
+	if (!signOnUrl){
+		var signOnUrl = '/alservlet/SignonInitServlet'; 
+	}  
+	
+	
+  	document.cookie='PNCTestCookie=1';
+  	cookies = ""+document.cookie;
+  	index = cookies.indexOf('PNCTestCookie');
+  	if(index==-1){
+  		 buildCookieError();
+  	}else{
+  		buildFrameset(signOnUrl)
+  	};
+// -->
+</script>
+</html>

@@ -1,0 +1,9 @@
+Directions for running a C++ file (cpp)
+$ g++ -o example.cpp
+$ ./a.out
+
+OR
+
+$ g++ example.cpp -o file
+$ chmod x+ file
+$ ./file

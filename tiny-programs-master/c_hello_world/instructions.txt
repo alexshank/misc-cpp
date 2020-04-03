@@ -1,0 +1,3 @@
+Directions for runnign a C file
+$ gcc example.c -o file
+$ ./file

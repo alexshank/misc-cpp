@@ -1,0 +1,10 @@
+a.out
+
+data.txt
+data_save.txt
+output.txt
+
+.data.txt.swp
+.data_save.txt.swp
+.output.txt.swp
+.parser.cpp.swp
