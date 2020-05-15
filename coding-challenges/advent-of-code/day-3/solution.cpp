@@ -9,41 +9,33 @@ struct Point {
     int x, y;
 };
 struct Segment {
-    Point start, end;
+    Point p1, p2;
     bool isVertical;
 };
  
-void addSegment(vector<Segment> &segmentVector, const string &parameter, const Point &startPoint){
-    char direction = parameter[0];
-    int distance = stoi(parameter.substr(1, parameter.length()));
+void addSegment(vector<Segment> &segmentVector, const string &segmentString, const Point &startPoint){
+    char direction = segmentString[0];
+    int distance = stoi(segmentString.substr(1, segmentString.length()));
     Point endPoint = startPoint;
-    bool isVertical = false;
+    bool isVertical = (direction == 'U' || direction == 'D');
     switch(direction){
         case 'R': endPoint.x += distance; break;
         case 'L': endPoint.x -= distance; break;
-        case 'U':
-            endPoint.y += distance;
-            isVertical = true;
-            break;
-        case 'D':
-            endPoint.y -= distance;
-            isVertical = true;
+        case 'U': endPoint.y += distance; break;
+        case 'D': endPoint.y -= distance; break;
     }
     segmentVector.push_back({startPoint, endPoint, isVertical});
 }
 
-// checks if c is within [a, b] or [b, a]
-bool withinRange(int c, int a, int b){
-    int start = a >= b ? b : a;
-    int end = a >= b ? a : b;
-    return start <= c && c <= end;
+bool isBetween(int c, int a, int b){
+    if(a > b) return isBetween(c, b, a);
+    return a <= c && c <= b;
 }
 
-// takes vertical segment first 
 void addIntersection(vector<Point> &intersectionPoints, const Segment &vert, const Segment &horz){
-    if(withinRange(vert.start.x, horz.start.x, horz.end.x)
-            && withinRange(horz.start.y, vert.start.y, vert.end.y)){
-        intersectionPoints.push_back({vert.start.x, horz.start.y});
+    if(isBetween(vert.p1.x, horz.p1.x, horz.p2.x)
+            && isBetween(horz.p1.y, vert.p1.y, vert.p2.y)){
+        intersectionPoints.push_back({vert.p1.x, horz.p1.y});
     }
 }
 
@@ -65,18 +57,18 @@ bool checkIfPointOnSegment(const Point &p, const Segment &seg, int &time){
     int distance = 0;
     bool pointFound = false;
     if(seg.isVertical){
-        if(withinRange(p.y, seg.start.y, seg.end.y) && p.x == seg.start.x){
-            distance = abs(seg.end.y - seg.start.y) - abs(seg.end.y - p.y);
+        if(isBetween(p.y, seg.p1.y, seg.p2.y) && p.x == seg.p1.x){
+            distance = abs(seg.p2.y - seg.p1.y) - abs(seg.p2.y - p.y);
             pointFound = true;
         }else{
-            distance = abs(seg.end.y - seg.start.y);
+            distance = abs(seg.p2.y - seg.p1.y);
         }
     }else{
-        if(withinRange(p.x, seg.start.x, seg.end.x) && p.y == seg.start.y){
-            distance = abs(seg.end.x - seg.start.x) - abs(seg.end.x - p.x);
+        if(isBetween(p.x, seg.p1.x, seg.p2.x) && p.y == seg.p1.y){
+            distance = abs(seg.p2.x - seg.p1.x) - abs(seg.p2.x - p.x);
             pointFound = true;
         }else{
-            distance = abs(seg.end.x - seg.start.x);
+            distance = abs(seg.p2.x - seg.p1.x);
         }
     }
     time += abs(distance);
@@ -84,11 +76,10 @@ bool checkIfPointOnSegment(const Point &p, const Segment &seg, int &time){
 }
 
 int timeToPoint(const Point &p, const vector<Segment> &segmentsA, const vector<Segment> &segmentsB){
-    int timeA = 0;
+    int timeA = 0, timeB = 0;
     for(Segment s : segmentsA){
         if(checkIfPointOnSegment(p, s, timeA)) break;
     }
-    int timeB = 0;
     for(Segment s : segmentsB){
         if(checkIfPointOnSegment(p, s, timeB)) break;
     }
@@ -98,8 +89,7 @@ int timeToPoint(const Point &p, const vector<Segment> &segmentsA, const vector<S
 int main(){
     // read input file
     ifstream inputFile;
-    string lineA;
-    string lineB;
+    string lineA, lineB;
     inputFile.open("input.txt");
     if(inputFile.is_open()){
         getline(inputFile, lineA);
@@ -111,27 +101,26 @@ int main(){
     stringstream ss(lineA);
     vector<Segment> segmentsA;
     string segmentString;
-    Point currentCoords = {0, 0};
+    Point startPoint = {0, 0};
     while(getline(ss, segmentString, ',')){
-        addSegment(segmentsA, segmentString, currentCoords);
-        currentCoords = segmentsA.back().end;
+        addSegment(segmentsA, segmentString, startPoint);
+        startPoint = segmentsA.back().p2;
     }
 
     // create wire B segments
     ss = stringstream(lineB);
     vector<Segment> segmentsB;
-    currentCoords = {0, 0};
+    startPoint = {0, 0};
     while(getline(ss, segmentString, ',')){
-        addSegment(segmentsB, segmentString, currentCoords);
-        currentCoords = segmentsB.back().end;
+        addSegment(segmentsB, segmentString, startPoint);
+        startPoint = segmentsB.back().p2;
     }
 
     // find smallest distance in intersection set
     vector<Point> intersectionPoints = getIntersectionPoints(segmentsA, segmentsB);
     int minDistance = INT_MAX;
     int minTime = INT_MAX;
-    int distance = 0;
-    int time = 0;
+    int distance, time = 0;
     for(const Point &p : intersectionPoints){
         if((distance = abs(p.x) + abs(p.y)) < minDistance){
             minDistance = distance;
